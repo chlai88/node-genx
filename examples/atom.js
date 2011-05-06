@@ -1,9 +1,15 @@
-var genx = require('genx');
+var genx = require('../build/default/genx');
 
 var w = new genx.Writer();
+var xml_data = "" ;
 
 w.on('data', function(data) {
-  process.stdout.write(data);
+  xml_data += data;
+})
+
+w.on('flush', function(data) {
+  console.log("flush");
+  process.stdout.write(xml_data);
 })
 
 // Declare the elements and attributes up-front

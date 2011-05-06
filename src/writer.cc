@@ -66,6 +66,7 @@ void Writer::Initialize(Handle<Object> target)
   target->Set(String::NewSymbol("Writer"), t->GetFunction());
 
   sym_data = NODE_PSYMBOL("data");
+  sym_flush = NODE_PSYMBOL("flush");
 }
 
 Writer::Writer()
@@ -611,6 +612,14 @@ genxStatus Writer::sender_sendBounded(void *userData, constUtf8 start, constUtf8
 
 genxStatus Writer::sender_flush(void * userData)
 {
+  HandleScope scope;
+  Writer *w = reinterpret_cast<Writer *>(userData);
+
+  // Deliver the data event
+  Local<String> dataString = String::New("flush");
+  Handle<Value> argv[1] = { dataString };
+  w->Emit(sym_flush, 1, argv);
+
   return GENX_SUCCESS;
 }
 
